@@ -1,0 +1,6 @@
+/bert_trainer
+data/
+/lightning_logs
+/models/trained
+/prepared
+/nn_datasets/precalculated_datasets
