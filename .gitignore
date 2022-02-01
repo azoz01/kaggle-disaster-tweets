@@ -1,6 +1,6 @@
 /bert_trainer
-data/
+/data/*.csv
 /lightning_logs
-/models/trained
-/prepared
-/nn_datasets/precalculated_datasets
+/models/trained/*.pt
+/prepared/*.csv
+/nn_datasets/precalculated_datasets/*.pt
