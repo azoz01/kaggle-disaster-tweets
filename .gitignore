@@ -4,3 +4,5 @@
 /models/trained/*.pt
 /prepared/*.csv
 /nn_datasets/precalculated_datasets/*.pt
+.vscode/
+*/__pycache__/*

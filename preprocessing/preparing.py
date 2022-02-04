@@ -1,5 +1,6 @@
 import re
 import string
+
 import pandas as pd
 
 from icecream import ic
@@ -9,6 +10,7 @@ from tqdm.auto import tqdm
 
 tqdm.pandas()
 
+
 def clean_data(text_df: pd.DataFrame, to_lower: bool = True,
                remove_mail: bool = True, remove_url: bool = True,
                remove_ref: bool = True, remove_punct: bool = True,
@@ -16,19 +18,27 @@ def clean_data(text_df: pd.DataFrame, to_lower: bool = True,
                remove_stopwords: bool = True) -> pd.DataFrame:
     """
     Cleans 'text' column in text_df:
+
     Args:
         text_df (pd.DataFrame): dataframe with column 'text' containing strings
-        to_lower (bool, optional): if True all letters converted to lower. Defaults to True.
-        remove_mail (bool, optional): if True removes mail addresses. Defaults to True.
+        to_lower (bool, optional): if True all letters converted to lower.
+                                   Defaults to True.
+        remove_mail (bool, optional): if True removes mail addresses.
+                                      Defaults to True.
         remove_url (bool, optional): if True removes urls. Defaults to True.
-        remove_ref (bool, optional): if True removes twitter references (*@). Defaults to True.
-        remove_punct (bool, optional): if True removes punctuation. Defaults to True.
+        remove_ref (bool, optional): if True removes twitter references (*@).
+                                     Defaults to True.
+        remove_punct (bool, optional): if True removes punctuation.
+                                       Defaults to True.
         remove_num (bool, optional): if True removes numbers. Defaults to True.
-        correct_spelling (bool, optional): if True corrects typos. Defaults to True.
-        remove_stopwords (bool, optional): if True removes stopwords. Defaults to True.
+        correct_spelling (bool, optional): if True corrects typos.
+                                           Defaults to True.
+        remove_stopwords (bool, optional): if True removes stopwords.
+                                           Defaults to True.
 
     Returns:
-        pd.DataFrame: dataframe with single column 'text' containing cleaned text
+        pd.DataFrame: dataframe with single column 'text'
+                      containing cleaned text
     """
     text_df = text_df['text']
     if to_lower:
@@ -55,11 +65,13 @@ def clean_data(text_df: pd.DataFrame, to_lower: bool = True,
     if remove_stopwords:
         ic('Remove stopwords')
         text_df = text_df.progress_apply(__remove_stopwords)
-    return pd.DataFrame({'text': text_df}) 
+    return pd.DataFrame({'text': text_df})
+
 
 def __to_lower(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
@@ -72,6 +84,7 @@ def __to_lower(sentence: str) -> str:
 def __remove_punctuation(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
@@ -79,72 +92,83 @@ def __remove_punctuation(sentence: str) -> str:
         str: sentence without punctuation
     """
     nopunc = [char for char in sentence if char not in string.punctuation]
-    return ''.join(nopunc) 
+    return ''.join(nopunc)
 
 
 def __remove_stopwords(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
     Returns:
         str: sentence without stopwords
     """
-    return ' '.join([word for word in sentence.split() if word.lower() not in stopwords.words('english')])
+    return ' '.join([word for word in sentence.split()
+                     if word.lower() not in stopwords.words('english')])
 
 
 def __remove_url(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
     Returns:
         str: sentence without urls
     """
-    return re.sub(r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?', '' , sentence)
+    url_regex = r'(http|https|ftp|ssh)://([\w_-]+(?:(?:\.[\w_-]+)+))' + \
+                r'([\w.,@?^=%&:/~+#-]*[\w@?^=%&/~+#-])?'
+    return re.sub(url_regex, '', sentence)
 
 
 def __remove_email(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
     Returns:
         str: sentence without mail addresses
     """
-    return re.sub(r'([a-z0-9+._-]+@[a-z0-9+._-]+\.[a-z0-9+_-]+)', '', sentence)
+    mail_regex = r'([a-z0-9+._-]+@[a-z0-9+._-]+\.[a-z0-9+_-]+)'
+    return re.sub(mail_regex, '', sentence)
 
 
 def __remove_numbers(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
     Returns:
         str: sentence without numbers
     """
-    return re.sub('\d+', '', sentence)
+    return re.sub(r'\d+', '', sentence)
 
 
 def __remove_twitter_references(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
     Returns:
         str: sentence without twitter references(@*)
     """
-    return re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)" , '',sentence)
+    twitter_ref_regex = r'(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:\/\/\S+)'
+    return re.sub(twitter_ref_regex, '', sentence)
 
 
 def __spelling_correction(sentence: str) -> str:
     """
     Converts all letters in sentence to lower
+
     Args:
         sentence (str):
 
